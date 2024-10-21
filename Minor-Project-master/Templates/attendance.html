@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Attendance Module Connection Detector</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        overflow: hidden;
+      }
+
+      /* Video background styling */
+      video#bgVideo {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1;
+      }
+
+      /* Content styling */
+      h1,
+      button,
+      #status,
+      a {
+        position: relative;
+        z-index: 1;
+      }
+
+      h1 {
+        color: rgb(163, 191, 52);
+      }
+
+      button {
+        padding: 15px 40px;
+        font-size: 18px;
+        cursor: pointer;
+        background-color: #00aaff;
+        color: white;
+        border: none;
+        border-radius: 25px;
+        margin: 10px;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+      }
+      button:hover {
+        background-color: #0088cc;
+        transform: scale(1.05);
+      }
+
+      button:active {
+        background-color: #005f99;
+        transform: scale(0.98);
+      }
+      #status {
+        margin-top: 20px;
+        font-size: 18px;
+        color: rgba(79, 95, 155, 0.999);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Video background -->
+    <video id="bgVideo" autoplay muted loop>
+      <source src="/background.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+
+    <h1>Attendance Module Connection Detector</h1>
+    <button id="connectButton">Connect to Arduino</button>
+    <div id="status">Status: Not connected</div>
+
+    <script>
+      const connectButton = document.getElementById("connectButton");
+      const statusDiv = document.getElementById("status");
+
+      async function connectArduino() {
+        try {
+          // Prompt user to select a port.
+          const port = await navigator.serial.requestPort();
+
+          // Wait for the port to open.
+          await port.open({ baudRate: 9600 });
+
+          statusDiv.textContent = "Status: Arduino connected";
+          statusDiv.style.color = "green";
+
+          // Redirect to dashboard after 3 seconds
+          setTimeout(function () {
+            window.location.href = "/Operation";
+          }, 3000); // 3000 milliseconds = 3 seconds
+
+          // Optionally read data from Arduino
+          const reader = port.readable.getReader();
+          while (true) {
+            const { value, done } = await reader.read();
+            if (done) {
+              break; // Exit loop if done
+            }
+            console.log("Data from Arduino: ", new TextDecoder().decode(value));
+          }
+
+          reader.releaseLock();
+        } catch (error) {
+          statusDiv.textContent = "Status: Failed to connect";
+          statusDiv.style.color = "red";
+          console.error("Error: ", error);
+        }
+      }
+
+      connectButton.addEventListener("click", connectArduino);
+    </script>
+  </body>
+</html>
