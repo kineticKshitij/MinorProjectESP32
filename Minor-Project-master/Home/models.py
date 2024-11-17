@@ -1,5 +1,6 @@
 from django.db import models
 
+<<<<<<< HEAD
 class Organization(models.Model):
     name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
@@ -13,3 +14,14 @@ class Organization(models.Model):
         return self.name
 
     # Additional methods, such as to verify OTP, can be added here
+=======
+# Create your models here.
+class Signup(models.Model):
+    Organization_Name = models.CharField(max_length=100)
+    email=models.EmailField()
+    # widgets = {
+    #         'password': models.PasswordInput()
+    #     }
+    phone=models.BigIntegerField()
+    
+>>>>>>> origin/master
