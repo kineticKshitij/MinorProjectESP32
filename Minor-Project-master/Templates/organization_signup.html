@@ -4,6 +4,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
+    <title>Organization Sign-Up with CAPTCHA and OTP</title>
+    <style>
+        /* Basic styling */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        main {
+            z-index: 1;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 80%;
+            width: 400px;
+            box-sizing: border-box;
+        }
+        h1 {
+            color: azure;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        input[type="text"], input[type="email"], input[type="password"] {
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+            width: 80%;
+            border-radius: 5px;
+            border: none;
+        }
+        button, input[type="submit"] {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: none;
+            background-color: #00aaff;
+            color: white;
+        }
+        .captcha-box {
+            margin: 20px;
+            font-size: 20px;
+            color: white;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+        .success {
+            color: green;
+            margin-top: 10px;
+        }
+        video#bgVideo {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+        .otp-section {
+            display: none; /* Initially hide OTP section */
+        }
+        .otp-timer, .resend-button {
+            color: white;
+            margin-top: 10px;
+        }
+        .otp-message {
+            color: lightgreen;
+            margin-top: 10px;
+=======
     <title>Organization Form with CAPTCHA and OTP</title>
     <style>
         /* Basic styling (remains unchanged) */
@@ -36,7 +116,7 @@
           padding: 10px;
           margin: 10px 0;
           font-size: 16px;
-          width: 80%;
+          width: 100%;
           border-radius: 5px;
           border: none;
         }
@@ -82,6 +162,7 @@
         .otp-message {
           color: lightgreen;
           margin-top: 10px;
+>>>>>>> origin/master
         }
     </style>
 </head>
@@ -93,6 +174,10 @@
     </video>
 
     <main>
+<<<<<<< HEAD
+        <!-- Organization Sign-Up Form -->
+=======
+>>>>>>> origin/master
         <form id="organizationForm" action="{% url 'organization_signup' %}" method="POST">
             {% csrf_token %}
             <h1>Organization Name:</h1>
@@ -118,8 +203,17 @@
 
             <!-- OTP Section -->
             <div class="otp-section" id="otpSection">
+<<<<<<< HEAD
+                <form id="otp-verification-form" method="POST" action="{% url 'verify_otp' %}">
+                    {% csrf_token %}
+                    <input type="text" name="otp" placeholder="Enter OTP" required />
+                    <button type="submit">Verify OTP</button>
+                </form>
+                
+=======
                 <h1>Enter OTP:</h1>
                 <input type="text" id="otpInput" name="otp" placeholder="Enter OTP" required>
+>>>>>>> origin/master
                 <div class="otp-message" id="otpSentMessage"></div>
                 <div class="otp-timer" id="otpTimer">Time remaining: <span id="time">30</span> seconds</div>
                 <button type="button" id="resendOtp" class="resend-button" disabled onclick="resendOtp()">Resend OTP</button>
@@ -128,6 +222,140 @@
     </main>
 
     <script>
+<<<<<<< HEAD
+      // Generate random numbers for CAPTCHA
+      let num1 = {{ num1 }};
+      let num2 = {{ num2 }};
+      let correctAnswer = num1 + num2;
+  
+      // Function to validate CAPTCHA and send OTP
+      function validateForm() {
+          const userAnswer = parseInt(document.getElementById("captchaInput").value);
+          const messageDiv = document.getElementById("captchaMessage");
+          const otpSection = document.getElementById("otpSection");
+          const otpMessage = document.getElementById("otpSentMessage");
+  
+          // Validate CAPTCHA answer
+          if (userAnswer === correctAnswer) {
+              messageDiv.textContent = "CAPTCHA correct!";
+              messageDiv.className = "success";
+              
+              // Show OTP section
+              otpSection.style.display = "block";
+              otpMessage.textContent = `Your OTP has been sent to ${document.getElementById("email").value}`;
+  
+              // Send form data to the server for OTP generation (AJAX request to prevent page reload)
+              const formData = new FormData(document.getElementById('organizationForm'));
+              fetch("{% url 'organization_signup' %}", {
+                  method: 'POST',
+                  body: formData
+              })
+              .then(response => response.json())
+              .then(data => {
+                  if (data.status === 'success') {
+                      console.log('OTP sent successfully');
+                      // Optionally, start OTP timer here
+                      startOtpTimer();
+                  } else {
+                      messageDiv.textContent = data.message;
+                      messageDiv.className = "error";
+                  }
+              })
+              .catch(error => {
+                  messageDiv.textContent = 'An error occurred while sending OTP.';
+                  messageDiv.className = "error";
+              });
+          } else {
+              messageDiv.textContent = "Incorrect CAPTCHA. Please try again.";
+              messageDiv.className = "error";
+              regenerateCaptcha();  // Generate new CAPTCHA
+          }
+      }
+  
+      // Function to regenerate a new CAPTCHA
+      function regenerateCaptcha() {
+          num1 = Math.floor(Math.random() * 10) + 1;
+          num2 = Math.floor(Math.random() * 10) + 1;
+          correctAnswer = num1 + num2;
+          document.getElementById("num1").textContent = num1;
+          document.getElementById("num2").textContent = num2;
+          document.getElementById("captchaInput").value = "";
+      }
+  
+      // OTP Timer Logic
+      let timeLeft = 30;
+      const otpTimerElement = document.getElementById("time");
+      const resendButton = document.getElementById("resendOtp");
+  
+      function startOtpTimer() {
+          resendButton.disabled = true;
+          timeLeft = 30;
+  
+          const otpInterval = setInterval(() => {
+              if (timeLeft <= 0) {
+                  clearInterval(otpInterval);
+                  resendButton.disabled = false;
+                  otpTimerElement.textContent = "Expired";
+              } else {
+                  otpTimerElement.textContent = timeLeft;
+                  timeLeft -= 1;
+              }
+          }, 1000);
+      }
+  
+      // Resend OTP Functionality
+      function resendOtp() {
+          timeLeft = 30;
+          resendButton.disabled = true;
+          otpTimerElement.textContent = timeLeft;
+  
+          // Resend OTP logic (send AJAX request to resend OTP)
+          const email = document.getElementById("email").value;
+          fetch("{% url 'resend_otp' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({email: email})
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.status === 'success') {
+                  console.log('OTP resent successfully');
+                  startOtpTimer();  // Restart the timer
+              } else {
+                  alert(data.message);
+              }
+          })
+          .catch(error => {
+              alert('Error resending OTP.');
+          });
+      }
+  
+      // Submit OTP for verification
+      function submitOtp() {
+          const otp = document.getElementById('otpInput').value;
+          const formData = new FormData(document.getElementById('organizationForm'));
+          formData.append('otp', otp);
+  
+          fetch("{% url 'verify_otp' %}", {
+              method: 'POST',
+              body: formData
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.status === 'success') {
+                  alert('OTP verified successfully');
+              } else {
+                  alert('Invalid OTP');
+              }
+          })
+          .catch(error => {
+              alert('Error during OTP verification');
+          });
+      }
+=======
         // Generate random numbers for CAPTCHA
         let num1 = {{ num1 }};
         let num2 = {{ num2 }};
@@ -206,6 +434,7 @@
                 }
             }, 1000);
         }
+>>>>>>> origin/master
     </script>
 </body>
 </html>

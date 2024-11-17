@@ -15,8 +15,11 @@ import os
 from decouple import config  # Ensure you install python-decouple
 import logging
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> origin/master
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
 
@@ -34,6 +37,7 @@ DEBUG = config('DEBUG', default=True, cast=bool)  # Use environment variable
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost').split(',')  # Use environment variable
 
+<<<<<<< HEAD
 # # EMAIL
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_HOST = 'smtp.mail.yahoo.com'  # Correct SMTP host for Yahoo
@@ -48,6 +52,15 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost').split(',')  # Use e
 #             connection.login(user=my_email, password=password)
 #             connection.sendmail(from_addr=my_email, to_addrs=birthday['email'],
 #                                 msg=f"Subject:Happy Birthday!\n\n {birthday_letter}")
+=======
+# EMAIL
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.mail.yahoo.com'  # Correct SMTP host for Yahoo
+EMAIL_PORT = 587  # Use 587 for TLS
+EMAIL_USE_TLS = True  # Use TLS for security
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')  # Your Yahoo email
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')  # Your Yahoo password
+>>>>>>> origin/master
 
 # Application definition
 INSTALLED_APPS = [
@@ -98,7 +111,10 @@ DATABASES = {
     }
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
