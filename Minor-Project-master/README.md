@@ -1,3 +1,0 @@
-# Minor-Project
-Minor
-acropolis
